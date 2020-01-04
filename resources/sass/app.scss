@@ -1,0 +1,22 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+@import '~jquery-ui/themes/base/all.css';
+
+.profile-block {
+  padding: 30px 20px 40px 20px;
+}
+
+.profile-photo {
+  text-align: center;
+}
+
+.profile-img {
+  width: 80%;
+}
