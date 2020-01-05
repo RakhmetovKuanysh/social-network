@@ -4,13 +4,36 @@ namespace App\Repositories\Interfaces;
 
 interface UserRepositoryInterface
 {
-    public function get($userId);
+    /**
+     * Получение пользователя
+     *
+     * @param  int $userId
+     * @return \App\User
+     */
+    public function get(int $userId);
 
-    public function all();
+    /**
+     * Удаление пользователя
+     *
+     * @param  int $userId
+     * @return void
+     */
+    public function delete(int $userId);
 
-    public function delete($userId);
+    /**
+     * Обновление пользователя
+     *
+     * @param  int $userId
+     * @param  array $data
+     * @return void
+     */
+    public function update(int $userId, array $data);
 
-    public function update($userId, array $data);
-
+    /**
+     * Создание пользователя
+     *
+     * @param  array $data
+     * @return void
+     */
     public function create(array $data);
 }

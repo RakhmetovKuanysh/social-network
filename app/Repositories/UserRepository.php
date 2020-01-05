@@ -12,32 +12,41 @@ use Illuminate\Support\Facades\Hash;
 class UserRepository implements UserRepositoryInterface
 {
     /**
-     * Получение пользователя
+     * {@inheritdoc}
      *
-     * @param $userId
+     * @param  int $userId
+     * @return \App\User
      */
-    public function get($userId)
-    {
-
-    }
-
-    public function all()
-    {
-
-    }
-
-    public function delete($userId)
-    {
-
-    }
-
-    public function update($userId, array $data)
+    public function get(int $userId)
     {
 
     }
 
     /**
-     * Создание пользователя
+     * {@inheritdoc}
+     *
+     * @param  int $userId
+     * @return void
+     */
+    public function delete(int $userId)
+    {
+
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param  int $userId
+     * @param  array $data
+     * @return void
+     */
+    public function update(int $userId, array $data)
+    {
+
+    }
+
+    /**
+     * {@inheritdoc}
      *
      * @param  array $data
      * @throws \Exception
