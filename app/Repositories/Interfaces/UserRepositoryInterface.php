@@ -5,12 +5,21 @@ namespace App\Repositories\Interfaces;
 interface UserRepositoryInterface
 {
     /**
-     * Получение пользователя
+     * Получение пользователя по id
      *
      * @param  int $userId
      * @return \App\User
      */
-    public function get(int $userId);
+    public function getById(int $userId);
+
+    /**
+     * Получение пользователя по логину и паролю
+     *
+     * @param  string    $email
+     * @param  string    $password
+     * @return \App\User
+     */
+    public function getByCredentials(string $email, string $password);
 
     /**
      * Удаление пользователя

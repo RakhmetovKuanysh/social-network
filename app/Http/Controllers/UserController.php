@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 /**
  * Контроллер действий пользователя
@@ -34,10 +35,10 @@ class UserController extends Controller
      */
     public function profile()
     {
-        if (Auth::user() == null) {
+        if (!Session::has('user')) {
             return redirect('home');
         }
 
-        return view('profile', ['user' => Auth::user()]);
+        return view('profile', ['user' => Session::get('user')]);
     }
 }

@@ -8,16 +8,6 @@ namespace App\Http\Controllers;
 class HomeController extends Controller
 {
     /**
-     * Конструктор
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
      * Главная страница
      *
      * @return \Illuminate\Contracts\Support\Renderable

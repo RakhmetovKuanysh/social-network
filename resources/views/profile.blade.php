@@ -12,22 +12,22 @@
                                     <img src="https://ludirosta.ru/img/default_profile.jpg" class="profile-img">
                                 </div>
                                 <div class="col-md-6 profile-description">
-                                    <h3>{{$user->name}} {{$user->surname}}</h3>
+                                    <h3>{{ $user->getName() }} {{ $user->getSurname() }}</h3>
                                     <p class="h5 text-primary mt-2 d-block font-weight-light">
-                                        {{ $user->email }}
+                                        {{ $user->getEmail() }}
                                     </p>
                                     <dl class="row mt-4 mb-4 pb-3">
                                         <dt class="col-sm-3">Gender</dt>
-                                        <dd class="col-sm-9">{{ now()->year - $user->year }}</dd>
+                                        <dd class="col-sm-9">{{ now()->year - $user->getYear() }}</dd>
 
                                         <dt class="col-sm-3">Gender</dt>
-                                        <dd class="col-sm-9">{{ $user->gender === 1 ? "Male" : "Female" }}</dd>
+                                        <dd class="col-sm-9">{{ $user->getGender() === 1 ? "Male" : "Female" }}</dd>
 
                                         <dt class="col-sm-3">City</dt>
-                                        <dd class="col-sm-9">{{ $user->city }}</dd>
+                                        <dd class="col-sm-9">{{ $user->getCity() }}</dd>
 
                                         <dt class="col-sm-3">Interests</dt>
-                                        <dd class="col-sm-9">{{ $user->interests }}</dd>
+                                        <dd class="col-sm-9">{{ $user->getInterests() }}</dd>
                                     </dl>
                                 </div>
                             </div>

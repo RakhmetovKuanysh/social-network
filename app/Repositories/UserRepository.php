@@ -3,8 +3,9 @@
 namespace App\Repositories;
 
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use function PHPSTORM_META\type;
 
 /**
  * Репозиторий для работы с пользователем
@@ -14,10 +15,32 @@ class UserRepository implements UserRepositoryInterface
     /**
      * {@inheritdoc}
      *
+     * @param  string     $email
+     * @param  string     $password
+     * @return \App\User
+     * @throws \Exception
+     */
+    public function getByCredentials(string $email, string $password)
+    {
+        $result = DB::selectOne(
+            'SELECT * FROM users WHERE email=? AND password=?',
+            [$email, md5($password)]
+        );
+
+        if (empty($result)) {
+            return null;
+        }
+
+        return new User((array) $result);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
      * @param  int $userId
      * @return \App\User
      */
-    public function get(int $userId)
+    public function getById(int $userId)
     {
 
     }
@@ -55,7 +78,7 @@ class UserRepository implements UserRepositoryInterface
     {
         $name      = $data['name'];
         $surname   = $data['surname'];
-        $password  = Hash::make($data['password']);
+        $password  = md5($data['password']);
         $email     = $data['email'];
         $year      = $data['year'];
         $city      = $data['city'];

@@ -2,37 +2,147 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
-class User extends Authenticatable
+/**
+ * Модель пользователя
+ */
+class User
 {
-    use Notifiable;
+    /**
+     * Email
+     *
+     * @var string
+     */
+    private $email;
 
     /**
-     * The attributes that are mass assignable.
+     * Имя
      *
-     * @var array
+     * @var string
      */
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
+    private $name;
 
     /**
-     * The attributes that should be hidden for arrays.
+     * Фамилия
      *
-     * @var array
+     * @var string
      */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+    private $surname;
 
     /**
-     * The attributes that should be cast to native types.
+     * Пол
      *
-     * @var array
+     * @var int
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    private $gender;
+
+    /**
+     * Интересы
+     *
+     * @var string
+     */
+    private $interests;
+
+    /**
+     * Город
+     *
+     * @var string
+     */
+    private $city;
+
+    /**
+     * Год рождения
+     *
+     * @var int
+     */
+    private $year;
+
+    /**
+     * Конструктор
+     *
+     * @param  array $data
+     * @return \App\User
+     */
+    public function __construct(array $data = [])
+    {
+        $this->email     = $data['email'] ?? '';
+        $this->name      = $data['name'] ?? '';
+        $this->surname   = $data['surname'] ?? '';
+        $this->city      = $data['city'] ?? '';
+        $this->year      = $data['year'] ?? '';
+        $this->interests = $data['interests'] ?? '';
+        $this->gender    = $data['gender'] ?? '';
+
+        return $this;
+    }
+
+    /**
+     * Email
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Имя
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Фамилия
+     *
+     * @return string
+     */
+    public function getSurname()
+    {
+        return $this->surname;
+    }
+
+    /**
+     * Год рождения
+     *
+     * @return int
+     */
+    public function getYear()
+    {
+        return $this->year;
+    }
+
+    /**
+     * Интересы
+     *
+     * @return string
+     */
+    public function getInterests()
+    {
+        return $this->interests;
+    }
+
+    /**
+     * Пол
+     *
+     * @return int
+     */
+    public function getGender()
+    {
+        return $this->gender;
+    }
+
+    /**
+     * Город
+     *
+     * @return string
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
 }

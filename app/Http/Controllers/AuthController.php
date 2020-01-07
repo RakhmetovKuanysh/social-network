@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\User;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -37,7 +38,7 @@ class AuthController extends Controller
      */
     public function register()
     {
-        if (Auth::user() !== null) {
+        if (Session::has('user')) {
             return redirect('home');
         }
 
@@ -52,7 +53,7 @@ class AuthController extends Controller
      */
     public function login()
     {
-        if (Auth::user() !== null) {
+        if (Session::has('user')) {
             return redirect('home');
         }
 
@@ -67,11 +68,14 @@ class AuthController extends Controller
      */
     public function authenticate(Request $request)
     {
-        $credentials = $request->only('email', 'password');
-        $remember    = $request->get('remember', 'off');
-        $validator   = Validator::make($credentials, []);
+        $email     = $request->get('email');
+        $password  = $request->get('password');
+        $validator = Validator::make([$email, $password], []);
+        $user      = $this->user->getByCredentials($email, $password);
 
-        if (Auth::attempt($credentials, $remember)) {
+        if ($user instanceof User) {
+            Session::put('user', $user);
+
             return redirect('profile');
         }
 
@@ -107,7 +111,6 @@ class AuthController extends Controller
     public function logout()
     {
         Session::flush();
-        Auth::logout();
 
         return Redirect('login');
     }
