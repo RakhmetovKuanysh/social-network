@@ -29,6 +29,7 @@
                                         <dt class="col-sm-3">Interests</dt>
                                         <dd class="col-sm-9">{{ $user->getInterests() }}</dd>
                                     </dl>
+                                    <button class="btn btn-primary">FOLLOW</button>
                                 </div>
                             </div>
                         </div>

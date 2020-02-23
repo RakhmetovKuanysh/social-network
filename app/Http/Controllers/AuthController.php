@@ -75,7 +75,7 @@ class AuthController extends Controller
         if ($user instanceof User) {
             Session::put('user', $user);
 
-            return redirect('profile');
+            return redirect()->route('profile', ['id' => $user->getId()]);
         }
 
         $validator->errors()->add('password', 'Invalid credentials');

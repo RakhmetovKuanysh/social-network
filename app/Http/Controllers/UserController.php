@@ -47,6 +47,16 @@ class UserController extends Controller
             abort(404);
         }
 
-        return view('profile', ['user' => $user]);
+        $sessionUser  = Session::get('user');
+        $subscribers  = $user->subscribers;
+        $isSubscribed = false;
+
+        foreach ($subscribers as $subscriber) {
+            if ($subscriber->subscriber_id === $sessionUser->id) {
+                $isSubscribed = true;
+            }
+        }
+
+        return view('profile', ['user' => $user, 'isSubscribed' => $isSubscribed]);
     }
 }

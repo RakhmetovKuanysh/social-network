@@ -2,11 +2,21 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 /**
  * Модель пользователя
  */
-class User
+class User extends Model
 {
+    /**
+     * Заполняемые поля
+     *
+     * @var array
+     */
+    protected $fillable = ['id'];
+
     /**
      * Id
      *
@@ -71,6 +81,8 @@ class User
      */
     public function __construct(array $data = [])
     {
+        parent::__construct($data);
+
         $this->id        = $data['id'] ?? null;
         $this->email     = $data['email'] ?? '';
         $this->name      = $data['name'] ?? '';
@@ -163,6 +175,21 @@ class User
         return $this->city;
     }
 
+    /**
+     * Подписчики
+     *
+     * @return HasMany
+     */
+    public function subscribers()
+    {
+        return $this->hasMany('App\Subscriber', 'follower_id', 'id');
+    }
+
+    /**
+     * Приводит сущность в массив
+     *
+     * @return array
+     */
     public function toArray()
     {
         return [
