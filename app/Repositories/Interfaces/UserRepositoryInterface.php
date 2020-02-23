@@ -7,10 +7,18 @@ interface UserRepositoryInterface
     /**
      * Получение пользователя по id
      *
-     * @param  int $userId
+     * @param  int       $userId
      * @return \App\User
      */
     public function getById(int $userId);
+
+    /**
+     * Получение пользователя по email
+     *
+     * @param  string    $email
+     * @return \App\User
+     */
+    public function getByEmail(string $email);
 
     /**
      * Получение пользователя по логину и паролю

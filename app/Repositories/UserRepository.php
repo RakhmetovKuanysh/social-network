@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\User;
 use Illuminate\Support\Facades\DB;
-use function PHPSTORM_META\type;
 
 /**
  * Репозиторий для работы с пользователем
@@ -37,12 +36,36 @@ class UserRepository implements UserRepositoryInterface
     /**
      * {@inheritdoc}
      *
-     * @param  int $userId
+     * @param  int       $id
      * @return \App\User
      */
-    public function getById(int $userId)
+    public function getById(int $id)
     {
+        $result = DB::selectOne('SELECT * FROM users WHERE id=?', [$id]);
 
+        if (empty($result)) {
+            return null;
+        }
+
+        return new User((array) $result);
+    }
+
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param  string    $email
+     * @return \App\User
+     */
+    public function getByEmail(string $email)
+    {
+        $result = DB::selectOne('SELECT * FROM users WHERE email=?', [$email]);
+
+        if (empty($result)) {
+            return null;
+        }
+
+        return new User((array) $result);
     }
 
     /**

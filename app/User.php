@@ -2,12 +2,18 @@
 
 namespace App;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
 /**
  * Модель пользователя
  */
 class User
 {
+    /**
+     * Id
+     *
+     * @var int
+     */
+    private $id;
+
     /**
      * Email
      *
@@ -65,15 +71,26 @@ class User
      */
     public function __construct(array $data = [])
     {
+        $this->id        = $data['id'] ?? null;
         $this->email     = $data['email'] ?? '';
         $this->name      = $data['name'] ?? '';
         $this->surname   = $data['surname'] ?? '';
         $this->city      = $data['city'] ?? '';
-        $this->year      = $data['year'] ?? '';
+        $this->year      = $data['year'] ?? null;
         $this->interests = $data['interests'] ?? '';
-        $this->gender    = $data['gender'] ?? '';
+        $this->gender    = $data['gender'] ?? null;
 
         return $this;
+    }
+
+    /**
+     * Id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -144,5 +161,18 @@ class User
     public function getCity()
     {
         return $this->city;
+    }
+
+    public function toArray()
+    {
+        return [
+            'id'        => $this->getId(),
+            'name'      => $this->getName(),
+            'surname'   => $this->getSurname(),
+            'gender'    => $this->getGender(),
+            'interests' => $this->getInterests(),
+            'year'      => $this->getYear(),
+            'email'     => $this->getEmail(),
+        ];
     }
 }
