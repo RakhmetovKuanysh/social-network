@@ -50,7 +50,6 @@ class UserRepository implements UserRepositoryInterface
         return new User((array) $result);
     }
 
-
     /**
      * {@inheritdoc}
      *
@@ -66,6 +65,26 @@ class UserRepository implements UserRepositoryInterface
         }
 
         return new User((array) $result);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param  string    $email
+     * @return \App\User[]
+     */
+    public function getAllLikeEmail(string $email, int $limit = 20)
+    {
+        $result = DB::table('users')
+            ->where('email', 'like', '%' . $email . '%')
+            ->take($limit)
+            ->get();
+
+        if (empty($result)) {
+            return [];
+        }
+
+        return $result->all();
     }
 
     /**

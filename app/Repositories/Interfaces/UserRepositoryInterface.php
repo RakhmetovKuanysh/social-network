@@ -21,6 +21,14 @@ interface UserRepositoryInterface
     public function getByEmail(string $email);
 
     /**
+     * Получение пользователей с похожим email
+     *
+     * @param  string      $email
+     * @return \App\User[]
+     */
+    public function getAllLikeEmail(string $email);
+
+    /**
      * Получение пользователя по логину и паролю
      *
      * @param  string    $email

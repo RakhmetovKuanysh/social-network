@@ -23,4 +23,5 @@ Route::post('logout', 'AuthController@logout')->name('logout');
 
 Route::get('profile', 'UserController@profile')->name('profile');
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::post('search', 'HomeController@search')->name('search');
+Route::get('home', 'HomeController@index')->name('home');

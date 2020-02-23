@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/home.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -25,6 +26,16 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
+                @if (\Illuminate\Support\Facades\Session::has('user'))
+                    <div class="search-field">
+                        <form action="{{ route('search') }}" method="POST">
+                            @csrf
+                            <input class="form-control search-field-input" type="text" name="email" placeholder="Search" aria-label="Search">
+                            <input type="submit" hidden />
+                        </form>
+                    </div>
+                @endif
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
@@ -43,12 +54,15 @@
                             @endif
                         @else
                             <li class="nav-item dropdown">
+                                @php
+                                    $user = \Illuminate\Support\Facades\Session::get('user');
+                                @endphp
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ \Illuminate\Support\Facades\Session::get('user')->getName() }} <span class="caret"></span>
+                                    {{ $user->getName() }} <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('profile') }}">
+                                    <a class="dropdown-item" href="{{ route('profile', ['id' => $user->getId()]) }}">
                                         {{ __('My Profile') }}
                                     </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"

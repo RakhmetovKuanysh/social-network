@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\Interfaces\UserRepositoryInterface;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 /**
@@ -30,15 +30,23 @@ class UserController extends Controller
     /**
      * Страница регистрации
      *
+     * @param  Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse
      *         |\Illuminate\Routing\Redirector|\Illuminate\View\View
      */
-    public function profile()
+    public function profile(Request $request)
     {
         if (!Session::has('user')) {
             return redirect('home');
         }
 
-        return view('profile', ['user' => Session::get('user')]);
+        $id   = $request->get('id');
+        $user = $this->user->getById($id);
+
+        if (null === $user) {
+            abort(404);
+        }
+
+        return view('profile', ['user' => $user]);
     }
 }
