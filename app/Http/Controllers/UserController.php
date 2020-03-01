@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Repositories\Interfaces\SubscriberRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -17,14 +18,20 @@ class UserController extends Controller
     protected $user;
 
     /**
+     * @var SubscriberRepositoryInterface
+     */
+    protected $subscriber;
+
+    /**
      * Конструктор
      *
      * @param  UserRepositoryInterface $user
      * @return void
      */
-    public function __construct(UserRepositoryInterface $user)
+    public function __construct(UserRepositoryInterface $user, SubscriberRepositoryInterface $subscriber)
     {
-        $this->user = $user;
+        $this->user       = $user;
+        $this->subscriber = $subscriber;
     }
 
     /**
@@ -57,6 +64,56 @@ class UserController extends Controller
             }
         }
 
-        return view('profile', ['user' => $user, 'isSubscribed' => $isSubscribed]);
+        return view('profile', [
+            'user'         => $user,
+            'posts'        => $user->posts,
+            'isSubscribed' => $isSubscribed,
+        ]);
+    }
+
+    /**
+     * Подписка на пользователя
+     *
+     * @param  Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse
+     *         |\Illuminate\Routing\Redirector|\Illuminate\View\View
+     */
+    public function subscribe(Request $request)
+    {
+        if (!Session::has('user')) {
+            return redirect('home');
+        }
+
+        $subscriberId = Session::get('user')->id;
+        $followerId   = $request->get('userId');
+
+        try {
+            $this->subscriber->create($followerId, $subscriberId);
+        } catch (\Exception $e) {}
+
+        return redirect()->route('profile', ['id' => $followerId]);
+    }
+
+    /**
+     * Отписка от пользователя
+     *
+     * @param  Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse
+     *         |\Illuminate\Routing\Redirector|\Illuminate\View\View
+     */
+    public function unsubscribe(Request $request)
+    {
+        if (!Session::has('user')) {
+            return redirect('home');
+        }
+
+        $subscriberId = Session::get('user')->id;
+        $followerId   = $request->get('userId');
+
+        try {
+            $this->subscriber->delete($followerId, $subscriberId);
+        } catch (\Exception $e) {}
+
+        return redirect()->route('profile', ['id' => $followerId]);
     }
 }

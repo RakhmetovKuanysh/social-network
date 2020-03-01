@@ -7,3 +7,21 @@
     width: 300px;
     margin: 0 auto;
 }
+
+.posts-block {
+    margin-top: 24px;
+}
+
+.post-element {
+    padding: 8px;
+}
+
+.block-created-at-time {
+    font-size: 10px;
+    color: darkblue;
+    margin-bottom: 0;
+}
+
+.block-text {
+    margin-bottom: 0;
+}

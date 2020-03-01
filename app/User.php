@@ -186,6 +186,16 @@ class User extends Model
     }
 
     /**
+     * Посты
+     *
+     * @return HasMany
+     */
+    public function posts()
+    {
+        return $this->hasMany('App\Post', 'user_id', 'id')->orderBy('created_at', 'desc');
+    }
+
+    /**
      * Приводит сущность в массив
      *
      * @return array
