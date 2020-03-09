@@ -186,6 +186,16 @@ class User extends Model
     }
 
     /**
+     * Подписчики
+     *
+     * @return HasMany
+     */
+    public function following()
+    {
+        return $this->hasMany('App\Subscriber', 'subscriber_id', 'id');
+    }
+
+    /**
      * Посты
      *
      * @return HasMany

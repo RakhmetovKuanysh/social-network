@@ -25,7 +25,8 @@ class UserController extends Controller
     /**
      * Конструктор
      *
-     * @param  UserRepositoryInterface $user
+     * @param  UserRepositoryInterface       $user
+     * @param  SubscriberRepositoryInterface $subscriber
      * @return void
      */
     public function __construct(UserRepositoryInterface $user, SubscriberRepositoryInterface $subscriber)

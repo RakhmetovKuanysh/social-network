@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\Interfaces\PostRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -17,14 +18,21 @@ class HomeController extends Controller
     protected $user;
 
     /**
+     * @var PostRepositoryInterface
+     */
+    protected $post;
+
+    /**
      * Конструктор
      *
      * @param  UserRepositoryInterface $user
+     * @param  PostRepositoryInterface $post
      * @return void
      */
-    public function __construct(UserRepositoryInterface $user)
+    public function __construct(UserRepositoryInterface $user, PostRepositoryInterface $post)
     {
         $this->user = $user;
+        $this->post = $post;
     }
 
     /**
@@ -38,7 +46,10 @@ class HomeController extends Controller
             return redirect('login');
         }
 
-        return view('home');
+        $user  = Session::get('user');
+        $posts = $this->post->getPosts($user->id);
+
+        return view('home', ['posts' => $posts]);
     }
 
     /**

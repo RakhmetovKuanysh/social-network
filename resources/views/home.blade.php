@@ -14,7 +14,12 @@
                         </div>
                     @endif
 
-                    You are logged in!
+                    @foreach ($posts as $post)
+                        <div class="post-element">
+                            <p class="lead block-text">{{ $post->text }}</p>
+                            <p class="block-created-at-time">{{ $post->created_at }}</p>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>

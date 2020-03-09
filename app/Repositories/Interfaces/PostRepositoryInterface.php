@@ -11,4 +11,12 @@ interface PostRepositoryInterface
      * @return void
      */
     public function create(array $data);
+
+    /**
+     * Получение постов
+     *
+     * @param  int   $userId
+     * @return array
+     */
+    public function getPosts(int $userId);
 }
