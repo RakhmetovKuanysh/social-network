@@ -161,6 +161,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Bschmitt\Amqp\AmqpServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -191,6 +192,7 @@ return [
 
     'aliases' => [
 
+        'Amqp' => Bschmitt\Amqp\Facades\Amqp::class,
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,

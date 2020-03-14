@@ -110,7 +110,10 @@ class Post extends Model
     public function toArray()
     {
         return [
-            'id' => $this->getId(),
+            'id'         => $this->getId(),
+            'text'       => $this->getText(),
+            'user_id'    => $this->getUserId(),
+            'created_at' => $this->getCreatedAt(),
         ];
     }
 }

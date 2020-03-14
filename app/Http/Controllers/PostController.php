@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\Interfaces\PostRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -12,6 +13,11 @@ use Illuminate\Support\Facades\Session;
 class PostController extends Controller
 {
     /**
+     * @var UserRepositoryInterface
+     */
+    protected $user;
+
+    /**
      * @var PostRepositoryInterface
      */
     protected $post;
@@ -19,11 +25,13 @@ class PostController extends Controller
     /**
      * Конструктор
      *
+     * @param  UserRepositoryInterface $user
      * @param  PostRepositoryInterface $post
      * @return void
      */
-    public function __construct(PostRepositoryInterface $post)
+    public function __construct(UserRepositoryInterface $user, PostRepositoryInterface $post)
     {
+        $this->user = $user;
         $this->post = $post;
     }
 
@@ -44,8 +52,10 @@ class PostController extends Controller
         $userId = $request->get('userId');
 
         if (!empty($text)) {
+            $user = $this->user->getById($userId);
+
             try {
-                $this->post->create($request->all());
+                $this->post->create($request->all(), $user);
             } catch (\Exception $e) {}
         }
 

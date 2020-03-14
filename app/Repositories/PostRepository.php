@@ -2,7 +2,10 @@
 
 namespace App\Repositories;
 
+use App\User;
+use App\Post;
 use App\Repositories\Interfaces\PostRepositoryInterface;
+use Bschmitt\Amqp\Facades\Amqp;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Session;
@@ -16,21 +19,41 @@ class PostRepository implements PostRepositoryInterface
      * {@inheritdoc}
      *
      * @param  array $data
+     * @param  User  $user
      * @throws \Exception
      */
-    public function create(array $data)
+    public function create(array $data, User $user)
     {
         $text   = $data['text'];
         $userId = $data['userId'];
-
-        $ok = DB::insert(
-            'INSERT INTO posts(text, user_id, created_at) VALUES (?, ?, ?)',
-            [$text, $userId, now()]
+        $postId = DB::table('posts')->insertGetId(
+            [
+                'text'       => $text,
+                'user_id'    => $userId,
+                'created_at' => now(),
+            ]
         );
 
-        if (!$ok) {
-            throw new \Exception('Cannot add post to the database');
+        $data = ['postId' => $postId, 'userId' => $userId];
+
+        Amqp::publish('posts', json_encode($data), ['queue' => 'posts']);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param  int       $id
+     * @return \App\Post
+     */
+    public function getById(int $id)
+    {
+        $result = DB::selectOne('SELECT * FROM posts WHERE id=?', [$id]);
+
+        if (empty($result)) {
+            return null;
         }
+
+        return new Post((array) $result);
     }
 
     /**
@@ -44,7 +67,7 @@ class PostRepository implements PostRepositoryInterface
         $posts = Redis::get('posts:' . $userId);
 
         if ($posts !== null) {
-            return $posts;
+            return json_decode($posts);
         }
 
         $user           = Session::get('user');
