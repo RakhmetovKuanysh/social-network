@@ -70,19 +70,7 @@ class PostRepository implements PostRepositoryInterface
             return json_decode($posts);
         }
 
-        $user           = Session::get('user');
-        $followingUsers = $user->following;
-        $result         = [];
-
-        foreach ($followingUsers as $following) {
-            $result = array_merge($result, $this->getFollowingPosts($following->follower_id));
-        }
-
-        usort($result, function ($a, $b) {
-            return $a->created_at < $b->created_at;
-        });
-
-        return $result;
+        return [];
     }
 
     /**
