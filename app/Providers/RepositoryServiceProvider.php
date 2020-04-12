@@ -22,5 +22,10 @@ class RepositoryServiceProvider extends Provider
             'App\Repositories\Interfaces\SubscriberRepositoryInterface',
             'App\Repositories\SubscriberRepository'
         );
+
+        $this->app->bind(
+            'App\Repositories\Interfaces\MessageRepositoryInterface',
+            'App\Repositories\MessageRepository'
+        );
     }
 }

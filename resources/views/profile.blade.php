@@ -43,6 +43,9 @@
                                         <button class="btn btn-primary">FOLLOWING</button>
                                     </a>
                                 @endif
+                                <a href="{{ route('messages', ['userId' => $user->getId()]) }}">
+                                    <button class="btn btn-success">SEND MESSAGE</button>
+                                </a>
                             @endif
                         </div>
                     </div>
