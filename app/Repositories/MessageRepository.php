@@ -45,7 +45,7 @@ class MessageRepository implements MessageRepositoryInterface
         );
 
         if (empty($result)) {
-            return null;
+            return [];
         }
 
         $messages = [];
