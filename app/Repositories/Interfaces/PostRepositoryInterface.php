@@ -9,8 +9,9 @@ interface PostRepositoryInterface
     /**
      * Добавление поста
      *
-     * @param  array $data
-     * @param  User  $user
+     * @param  array    $data
+     * @param  User     $user
+     * @return \App\Post
      * @return void
      */
     public function create(array $data, User $user);

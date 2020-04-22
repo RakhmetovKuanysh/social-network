@@ -34,6 +34,7 @@ Route::get('messages', 'MessageController@index')->name('messages');
 Route::post('sendMessage', 'MessageController@sendMessage')->name('sendMessage');
 
 // Посты
+Route::get('posts', 'PostController@getPosts')->name('posts');
 Route::post('publish', 'PostController@publish')->name('publish');
 
 // Главная

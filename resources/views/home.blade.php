@@ -14,12 +14,7 @@
                         </div>
                     @endif
 
-                    @foreach ($posts as $post)
-                        <div class="post-element">
-                            <p class="lead block-text">{{ $post->text }}</p>
-                            <p class="block-created-at-time">{{ $post->created_at }}</p>
-                        </div>
-                    @endforeach
+                    <posts></posts>
                 </div>
             </div>
         </div>

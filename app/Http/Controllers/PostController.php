@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PostUpdatedEvent;
 use App\Repositories\Interfaces\PostRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Контроллер для публикаций
@@ -44,7 +45,7 @@ class PostController extends Controller
      */
     public function publish(Request $request)
     {
-        if (!Session::has('user')) {
+        if (Auth::user() === null) {
             return redirect('home');
         }
 
@@ -55,10 +56,25 @@ class PostController extends Controller
             $user = $this->user->getById($userId);
 
             try {
-                $this->post->create($request->all(), $user);
+                $post = $this->post->create($request->all(), $user);
+                broadcast(new PostUpdatedEvent($post->toArray()));
             } catch (\Exception $e) {}
         }
 
         return redirect()->route('profile', ['id' => $userId]);
+    }
+
+    /**
+     * Получение постов
+     */
+    public function getPosts()
+    {
+        if (Auth::user() === null) {
+            abort(403);
+        }
+
+        $userId = Auth::user()->id;
+
+        return $this->post->getPosts($userId);
     }
 }

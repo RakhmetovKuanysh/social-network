@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Репозиторий для работы с пользователем
@@ -120,7 +121,7 @@ class UserRepository implements UserRepositoryInterface
     {
         $name      = $data['name'];
         $surname   = $data['surname'];
-        $password  = md5($data['password']);
+        $password  = Hash::make($data['password']);
         $email     = $data['email'];
         $year      = $data['year'];
         $city      = $data['city'];

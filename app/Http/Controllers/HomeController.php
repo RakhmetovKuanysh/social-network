@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Repositories\Interfaces\PostRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Главная страница
@@ -42,14 +42,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if (!Session::has('user')) {
+        if (Auth::user() === null) {
             return redirect('login');
         }
 
-        $user  = Session::get('user');
-        $posts = $this->post->getPosts($user->id);
-
-        return view('home', ['posts' => $posts]);
+        return view('home');
     }
 
     /**

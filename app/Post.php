@@ -65,11 +65,37 @@ class Post extends Model
     /**
      * Id
      *
+     * @param  int       $id
+     * @return \App\Post
+     */
+    public function setId(int $id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Id
+     *
      * @return int
      */
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Текст
+     *
+     * @param  string   $text
+     * @return \App\Post
+     */
+    public function setText(string $text)
+    {
+        $this->text = $text;
+
+        return $this;
     }
 
     /**
@@ -85,11 +111,37 @@ class Post extends Model
     /**
      * Id пользователя
      *
+     * @param  int       $userId
+     * @return \App\Post
+     */
+    public function setUserId(int $userId)
+    {
+        $this->userId = $userId;
+
+        return $this;
+    }
+
+    /**
+     * Id пользователя
+     *
      * @return int
      */
     public function getUserId()
     {
         return $this->userId;
+    }
+
+    /**
+     * Дата создания
+     *
+     * @param  \DateTime $createdAt
+     * @return \App\Post
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
     }
 
     /**

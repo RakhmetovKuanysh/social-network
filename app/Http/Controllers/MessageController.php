@@ -6,7 +6,7 @@ use App\Repositories\Interfaces\MessageRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Контроллер для сообщений
@@ -45,13 +45,13 @@ class MessageController extends Controller
      */
     public function index(Request $request)
     {
-        if (!Session::has('user')) {
+        if (Auth::user() === null) {
             return redirect('home');
         }
 
         $userId      = (int) $request->get('userId');
         $user        = $this->user->getById($userId);
-        $sessionUser = Session::get('user');
+        $sessionUser = Auth::user();
 
         if ($userId === $sessionUser->id || !($user instanceof User)) {
             abort(404);
@@ -70,13 +70,13 @@ class MessageController extends Controller
      */
     public function sendMessage(Request $request)
     {
-        if (!Session::has('user')) {
+        if (Auth::user() === null) {
             return redirect('home');
         }
 
         $userId      = (int) $request->get('userId');
         $user        = $this->user->getById($userId);
-        $sessionUser = Session::get('user');
+        $sessionUser = Auth::user();
 
         if ($userId === $sessionUser->id || !($user instanceof User)) {
             abort(404);

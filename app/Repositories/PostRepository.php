@@ -8,7 +8,6 @@ use App\Repositories\Interfaces\PostRepositoryInterface;
 use Bschmitt\Amqp\Facades\Amqp;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Facades\Session;
 
 /**
  * Репозиторий для работы с постами
@@ -18,25 +17,32 @@ class PostRepository implements PostRepositoryInterface
     /**
      * {@inheritdoc}
      *
-     * @param  array $data
-     * @param  User  $user
-     * @throws \Exception
+     * @param  array     $data
+     * @param  User      $user
+     * @return \App\Post
      */
-    public function create(array $data, User $user)
+    public function create(array $data, User $user): Post
     {
-        $text   = $data['text'];
-        $userId = $data['userId'];
+        $post = new Post();
+        $post->setText($data['text']);
+        $post->setUserId($data['userId']);
+        $post->setCreatedAt(now());
+
         $postId = DB::table('posts')->insertGetId(
             [
-                'text'       => $text,
-                'user_id'    => $userId,
-                'created_at' => now(),
+                'text'       => $post->getText(),
+                'user_id'    => $post->getUserId(),
+                'created_at' => $post->getCreatedAt(),
             ]
         );
 
-        $data = ['postId' => $postId, 'userId' => $userId];
+        $post->setId($postId);
 
-        Amqp::publish('posts', json_encode($data), ['queue' => 'posts']);
+//        $data = ['postId' => $postId, 'userId' => $post->getUserId()];
+
+//        Amqp::publish('posts', json_encode($data), ['queue' => 'posts']);
+
+        return $post;
     }
 
     /**
@@ -64,13 +70,25 @@ class PostRepository implements PostRepositoryInterface
      */
     public function getPosts(int $userId)
     {
-        $posts = Redis::get('posts:' . $userId);
+//        $posts = Redis::get('posts:' . $userId);
+//
+//        if ($posts !== null) {
+//            return json_decode($posts);
+//        }
 
-        if ($posts !== null) {
-            return json_decode($posts);
+        $user           = Auth::user();
+        $followingUsers = $user->following;
+        $result         = [];
+
+        foreach ($followingUsers as $following) {
+            $result = array_merge($result, $this->getFollowingPosts($following->follower_id));
         }
 
-        return [];
+        usort($result, function ($a, $b) {
+            return $a->created_at < $b->created_at;
+        });
+
+        return $result;
     }
 
     /**
@@ -80,11 +98,10 @@ class PostRepository implements PostRepositoryInterface
      * @param  int $limit
      * @return array
      */
-    protected function getFollowingPosts(int $userId, int $limit = 20)
+    protected function getFollowingPosts(int $userId)
     {
         $result = DB::table('posts')
             ->where('user_id', $userId)
-            ->take($limit)
             ->get();
 
         if (empty($result)) {

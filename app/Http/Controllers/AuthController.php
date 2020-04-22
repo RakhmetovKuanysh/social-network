@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -37,7 +38,7 @@ class AuthController extends Controller
      */
     public function register()
     {
-        if (Session::has('user')) {
+        if (Auth::user() !== null) {
             return redirect('home');
         }
 
@@ -52,7 +53,7 @@ class AuthController extends Controller
      */
     public function login()
     {
-        if (Session::has('user')) {
+        if (Auth::user() !== null) {
             return redirect('home');
         }
 
@@ -67,15 +68,12 @@ class AuthController extends Controller
      */
     public function authenticate(Request $request)
     {
-        $email     = $request->get('email');
-        $password  = $request->get('password');
-        $validator = Validator::make([$email, $password], []);
-        $user      = $this->user->getByCredentials($email, $password);
+        $credentials = $request->only('email', 'password');
+        $remember    = $request->get('remember', 'off');
+        $validator   = Validator::make($credentials, []);
 
-        if ($user instanceof User) {
-            Session::put('user', $user);
-
-            return redirect()->route('profile', ['id' => $user->getId()]);
+        if (Auth::attempt($credentials, $remember)) {
+            return redirect()->route('profile', ['id' => Auth::user()->id]);
         }
 
         $validator->errors()->add('password', 'Invalid credentials');

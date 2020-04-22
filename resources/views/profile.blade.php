@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @php
-    $sessionUser = \Illuminate\Support\Facades\Session::get('user');
-    $isMyProfile = $sessionUser->getId() === $user->getId();
+    $sessionUser = \Illuminate\Support\Facades\Auth::user();
+    $isMyProfile = $sessionUser->id === $user->getId();
 @endphp
 @section('content')
 <div class="container">

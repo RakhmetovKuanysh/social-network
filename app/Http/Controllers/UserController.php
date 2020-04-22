@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\SubscriberRepositoryInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Контроллер действий пользователя
@@ -44,7 +44,7 @@ class UserController extends Controller
      */
     public function profile(Request $request)
     {
-        if (!Session::has('user')) {
+        if (Auth::user() === null) {
             return redirect('home');
         }
 
@@ -55,7 +55,7 @@ class UserController extends Controller
             abort(404);
         }
 
-        $sessionUser  = Session::get('user');
+        $sessionUser  = Auth::user();
         $subscribers  = $user->subscribers;
         $isSubscribed = false;
 
@@ -81,11 +81,11 @@ class UserController extends Controller
      */
     public function subscribe(Request $request)
     {
-        if (!Session::has('user')) {
+        if (Auth::user() === null) {
             return redirect('home');
         }
 
-        $subscriberId = Session::get('user')->id;
+        $subscriberId = Auth::user()->id;
         $followerId   = $request->get('userId');
 
         try {
@@ -104,11 +104,11 @@ class UserController extends Controller
      */
     public function unsubscribe(Request $request)
     {
-        if (!Session::has('user')) {
+        if (Auth::user() === null) {
             return redirect('home');
         }
 
-        $subscriberId = Session::get('user')->id;
+        $subscriberId = Auth::user()->id;
         $followerId   = $request->get('userId');
 
         try {

@@ -27,7 +27,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                @if (\Illuminate\Support\Facades\Session::has('user'))
+                @if (\Illuminate\Support\Facades\Auth::user() !== null)
                     <div class="search-field">
                         <form action="{{ route('search') }}" method="POST">
                             @csrf
@@ -43,7 +43,7 @@
 
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
-                        @if (!\Illuminate\Support\Facades\Session::has('user'))
+                        @if (\Illuminate\Support\Facades\Auth::user() === null)
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                             </li>
@@ -55,14 +55,14 @@
                         @else
                             <li class="nav-item dropdown">
                                 @php
-                                    $user = \Illuminate\Support\Facades\Session::get('user');
+                                    $user = \Illuminate\Support\Facades\Auth::user()
                                 @endphp
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ $user->getName() }} <span class="caret"></span>
+                                    {{ $user->name }} <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('profile', ['id' => $user->getId()]) }}">
+                                    <a class="dropdown-item" href="{{ route('profile', ['id' => $user->id]) }}">
                                         {{ __('My Profile') }}
                                     </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
