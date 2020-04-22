@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    <posts></posts>
+                    <posts :user-id="{{ \Illuminate\Support\Facades\Auth::user()->id }}"></posts>
                 </div>
             </div>
         </div>

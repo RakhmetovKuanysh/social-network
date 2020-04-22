@@ -56,8 +56,12 @@ class PostController extends Controller
             $user = $this->user->getById($userId);
 
             try {
-                $post = $this->post->create($request->all(), $user);
-                broadcast(new PostUpdatedEvent($post->toArray()));
+                $post        = $this->post->create($request->all(), $user);
+                $subscribers = $user->subscribers;
+
+                foreach ($subscribers as $subscriber) {
+                    broadcast(new PostUpdatedEvent($post->toArray(), $subscriber->subscriber_id));
+                }
             } catch (\Exception $e) {}
         }
 

@@ -1919,6 +1919,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['userId'],
   data: function data() {
     return {
       'posts': ''
@@ -1928,7 +1929,7 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     this.getPosts();
-    Echo.join('posts').listen('PostUpdatedEvent', function (event) {
+    Echo["private"]("posts.".concat(this.userId)).listen('PostUpdatedEvent', function (event) {
       console.log(event.post);
 
       _this.posts.unshift(event.post);

@@ -8,6 +8,7 @@ use App\Repositories\Interfaces\PostRepositoryInterface;
 use Bschmitt\Amqp\Facades\Amqp;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Репозиторий для работы с постами

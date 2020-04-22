@@ -17,14 +17,17 @@ class PostUpdatedEvent implements ShouldBroadcast
 
     public $post;
 
+    public $userId;
+
     /**
      * Create a new event instance.
      *
      * @param array $post
      */
-    public function __construct(array $post)
+    public function __construct(array $post, int $userId)
     {
         $this->post = $post;
+        $this->userId = $userId;
     }
 
     /**
@@ -34,6 +37,6 @@ class PostUpdatedEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('posts');
+        return new PrivateChannel('posts.' . $this->userId);
     }
 }

@@ -10,6 +10,7 @@
 
 <script>
     export default {
+        props: ['userId'],
         data() {
             return {
                 'posts': ''
@@ -19,7 +20,7 @@
         created() {
             this.getPosts();
 
-            Echo.join('posts')
+            Echo.private(`posts.${this.userId}`)
                 .listen('PostUpdatedEvent', (event) => {
                     console.log(event.post);
 
