@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    $sessionUser = \Illuminate\Support\Facades\Session::get('user');
+    $sessionUser = \Illuminate\Support\Facades\Auth::user();
 @endphp
 @section('content')
 <div class="page-content page-container" id="page-content">
@@ -18,14 +18,13 @@
                         <h4 class="card-title"><strong>Chat - {{ $user->getEmail() }}</strong></h4>
                     </div>
                     <div class="ps-container ps-theme-default ps-active-y" id="chat-content" style="overflow-y: scroll !important; height:470px !important;">
-                        {{--<div class="media media-meta-day">Today</div>--}}
                         @foreach ($messages as $key => $message)
-                            @if ($message->getSenderId() == $sessionUser->getId())
+                            @if ($message->getSenderId() == $sessionUser->id)
                                 @php
                                     $isPreviousMy = isset($messages[$key - 1])
-                                        && $messages[$key - 1]->getSenderId() == $sessionUser->getId();
+                                        && $messages[$key - 1]->getSenderId() == $sessionUser->id;
                                     $isNextMy = isset($messages[$key + 1])
-                                        && $messages[$key + 1]->getSenderId() == $sessionUser->getId();
+                                        && $messages[$key + 1]->getSenderId() == $sessionUser->id;
                                 @endphp
                                 @if (!$isPreviousMy)
                                     <div class="media media-chat media-chat-reverse">
@@ -39,9 +38,9 @@
                             @else
                                 @php
                                     $isPreviousOther = isset($messages[$key - 1])
-                                        && $messages[$key - 1]->getReceiverId() == $sessionUser->getId();
+                                        && $messages[$key - 1]->getReceiverId() == $sessionUser->id;
                                     $isNextOther = isset($messages[$key + 1])
-                                        && $messages[$key + 1]->getReceiverId() == $sessionUser->getId();
+                                        && $messages[$key + 1]->getReceiverId() == $sessionUser->id;
                                 @endphp
                                 @if (!$isPreviousOther)
                                     <div class="media media-chat">

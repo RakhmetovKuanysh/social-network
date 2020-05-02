@@ -5,9 +5,32 @@ namespace App\Repositories;
 use App\Message;
 use App\Repositories\Interfaces\MessageRepositoryInterface;
 use Illuminate\Support\Facades\DB;
+use GuzzleHttp\Client;
 
 class MessageRepository implements MessageRepositoryInterface
 {
+    /**
+     * Клиент для запросов
+     *
+     * @var Client
+     */
+    protected $client;
+
+    /**
+     * Url в сервис получения данных
+     *
+     * @var string
+     */
+    protected $urlDatabase = 'http://127.0.0.1:8080';
+
+    /**
+     * Конструктор MessageRepository
+     */
+    public function __construct()
+    {
+        $this->client = new Client();
+    }
+
     /**
      * {@inheritdoc}
      *
@@ -19,41 +42,49 @@ class MessageRepository implements MessageRepositoryInterface
      */
     public function create(int $senderId, int $receiverId, string $text)
     {
-        $ok = DB::insert(
-            'INSERT INTO messages(sender_id, receiver_id, text, created_at) VALUES (?, ?, ?, ?)',
-            [$senderId, $receiverId, $text, now()]
-        );
+        try {
+            $response = $this->client->post(sprintf('%s/message', $this->urlDatabase), [
+                'form_params' => [
+                    'receiverId' => $receiverId,
+                    'senderId'   => $senderId,
+                    'text'       => $text,
+                ]
+            ]);
 
-        if (!$ok) {
-            throw new \Exception('Cannot add message to the database');
+            $data = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            throw new \Exception('Error while adding message');
+        }
+
+        if (!(isset($data['code']) && $data['code'] == 200)) {
+            throw new \Exception('Error while adding message');
         }
     }
 
     /**
      * {@inheritdoc}
      *
-     * @param  int $firstUserId
-     * @param  int $secondUserId
+     * @param  int            $senderId
+     * @param  int            $receiverId
      * @return \App\Message[]
      */
-    public function getMessages(int $firstUserId, int $secondUserId)
+    public function getMessages(int $senderId, int $receiverId)
     {
-        $result = DB::select(
-            'SELECT * FROM messages WHERE (receiver_id=? AND sender_id=?) '
-            . 'OR (receiver_id=? AND sender_id=?) ORDER BY created_at',
-            [$firstUserId, $secondUserId, $secondUserId, $firstUserId]
-        );
-
-        if (empty($result)) {
+        try {
+            $url      = sprintf('%s/messages?receiverId=%d&senderId=%d', $this->urlDatabase, $receiverId, $senderId);
+            $response = $this->client->get($url, []);
+            $data     = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
             return [];
         }
 
-        $messages = [];
+        $messages = $data['messages'] ?? [];
+        $result   = [];
 
-        foreach ($result as $message) {
-            $messages[] = new Message((array) $message);
+        foreach ($messages as $message) {
+            $result[] = new Message((array) $message);
         }
 
-        return $messages;
+        return $result;
     }
 }
