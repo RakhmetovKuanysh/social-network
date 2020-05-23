@@ -21,7 +21,7 @@
                                 {{ $user->getEmail() }}
                             </p>
                             <dl class="row mt-4 mb-4 pb-3">
-                                <dt class="col-sm-3">Gender</dt>
+                                <dt class="col-sm-3">Age</dt>
                                 <dd class="col-sm-9">{{ now()->year - $user->getYear() }}</dd>
 
                                 <dt class="col-sm-3">Gender</dt>

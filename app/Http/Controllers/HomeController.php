@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\Interfaces\MessageCounterRepositoryInterface;
 use App\Repositories\Interfaces\PostRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Http\Request;
@@ -23,16 +24,26 @@ class HomeController extends Controller
     protected $post;
 
     /**
+     * @var MessageCounterRepositoryInterface
+     */
+    protected $messageCounter;
+
+    /**
      * Конструктор
      *
-     * @param  UserRepositoryInterface $user
-     * @param  PostRepositoryInterface $post
+     * @param  UserRepositoryInterface           $user
+     * @param  PostRepositoryInterface           $post
+     * @param  MessageCounterRepositoryInterface $messageCounter
      * @return void
      */
-    public function __construct(UserRepositoryInterface $user, PostRepositoryInterface $post)
-    {
+    public function __construct(
+        UserRepositoryInterface $user,
+        PostRepositoryInterface $post,
+        MessageCounterRepositoryInterface $messageCounter
+    ) {
         $this->user = $user;
         $this->post = $post;
+        $this->messageCounter = $messageCounter;
     }
 
     /**
@@ -46,7 +57,9 @@ class HomeController extends Controller
             return redirect('login');
         }
 
-        return view('home');
+        $nbCntUnread = $this->messageCounter->getNbUnreadMessages(Auth::id());
+
+        return view('home', ['nbCntUnread' => $nbCntUnread]);
     }
 
     /**
@@ -59,7 +72,8 @@ class HomeController extends Controller
     {
         $email = $request->get('email');
         $users = $this->user->getAllLikeEmail($email);
+        $nbCntUnread = $this->messageCounter->getNbUnreadMessages(Auth::id());
 
-        return view('search', ['users' => $users]);
+        return view('search', ['users' => $users, 'nbCntUnread' => $nbCntUnread]);
     }
 }

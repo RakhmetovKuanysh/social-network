@@ -38,6 +38,13 @@
                 @endif
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <a style="color: red; width: 100px">
+                        <span>
+                            @if(isset($nbCntUnread) && $nbCntUnread > 0)
+                                + {{ $nbCntUnread }} messages
+                            @endif
+                        </span>
+                    </a>
                     <ul class="navbar-nav mr-auto">
                     </ul>
 
@@ -64,6 +71,9 @@
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('profile', ['id' => $user->id]) }}">
                                         {{ __('My Profile') }}
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('messages') }}">
+                                        {{ __('Messages') }}
                                     </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();

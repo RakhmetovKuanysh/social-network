@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\Interfaces\MessageRepositoryInterface;
+use App\Repositories\Interfaces\MessageCounterRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\User;
 use Illuminate\Http\Request;
@@ -24,16 +25,26 @@ class MessageController extends Controller
     protected $message;
 
     /**
+     * @var MessageCounterRepositoryInterface
+     */
+    protected $messageCounter;
+
+    /**
      * Конструктор
      *
      * @param  UserRepositoryInterface $user
      * @param  MessageRepositoryInterface $message
+     * @param  MessageCounterRepositoryInterface $messageCounter
      * @return void
      */
-    public function __construct(UserRepositoryInterface $user, MessageRepositoryInterface $message)
-    {
+    public function __construct(
+        UserRepositoryInterface $user,
+        MessageRepositoryInterface $message,
+        MessageCounterRepositoryInterface $messageCounter
+    ) {
         $this->user    = $user;
         $this->message = $message;
+        $this->messageCounter = $messageCounter;
     }
 
     /**
@@ -53,13 +64,21 @@ class MessageController extends Controller
         $user        = $this->user->getById($userId);
         $sessionUser = Auth::user();
 
-        if ($userId === $sessionUser->id || !($user instanceof User)) {
+        if ($userId === $sessionUser->id) {
             abort(404);
+        }
+
+        $nbCntUnread = $this->messageCounter->getNbUnreadMessages(Auth::id());
+
+        if (!$user instanceof User) {
+            $threads = $this->message->getThreads($sessionUser->id);
+
+            return view('threads', ['threads' => $threads, 'nbCntUnread' => $nbCntUnread]);
         }
 
         $messages = $this->message->getMessages($userId, $sessionUser->id);
 
-        return view('messages', ['user' => $user, 'messages' => $messages]);
+        return view('messages', ['user' => $user, 'messages' => $messages, 'nbCntUnread' => $nbCntUnread]);
     }
 
     /**

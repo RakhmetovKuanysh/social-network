@@ -22,4 +22,12 @@ interface MessageRepositoryInterface
      * @return \App\Message[]
      */
     public function getMessages(int $firstUserId, int $secondUserId);
+
+    /**
+     * Получение чатов
+     *
+     * @param  int $userId
+     * @return array
+     */
+    public function getThreads(int $userId);
 }

@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Message;
 use App\Repositories\Interfaces\MessageRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
 
@@ -24,11 +25,19 @@ class MessageRepository implements MessageRepositoryInterface
     protected $urlDatabase = 'http://127.0.0.1:8080';
 
     /**
-     * Конструктор MessageRepository
+     * @var UserRepositoryInterface
      */
-    public function __construct()
+    protected $user;
+
+    /**
+     * Конструктор
+     *
+     * @param  UserRepositoryInterface $user
+     */
+    public function __construct(UserRepositoryInterface $user)
     {
         $this->client = new Client();
+        $this->user    = $user;
     }
 
     /**
@@ -83,6 +92,44 @@ class MessageRepository implements MessageRepositoryInterface
 
         foreach ($messages as $message) {
             $result[] = new Message((array) $message);
+        }
+
+        return $result;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param  int $userId
+     * @return array
+     */
+    public function getThreads(int $userId)
+    {
+        try {
+            $url      = sprintf('%s/threads?userId=%d', $this->urlDatabase, $userId);
+            $response = $this->client->get($url, []);
+            $data     = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            return [];
+        }
+
+        $threads = $data['threads'] ?? [];
+        $users  = [];
+
+        foreach ($threads as $thread) {
+            if ($thread['receiver_id'] === $userId) {
+                $users[] = $thread['sender_id'];
+            } else {
+                $users[] = $thread['receiver_id'];
+            }
+        }
+
+        $users = array_unique($users);
+        $result = [];
+
+        foreach ($users as $userId) {
+            $user     = $this->user->getById($userId);
+            $result[] = $user;
         }
 
         return $result;

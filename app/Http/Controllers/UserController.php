@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\Interfaces\MessageCounterRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\SubscriberRepositoryInterface;
 use Illuminate\Http\Request;
@@ -23,16 +24,26 @@ class UserController extends Controller
     protected $subscriber;
 
     /**
+     * @var MessageCounterRepositoryInterface
+     */
+    protected $messageCounter;
+
+    /**
      * Конструктор
      *
      * @param  UserRepositoryInterface       $user
      * @param  SubscriberRepositoryInterface $subscriber
+     * @param  MessageCounterRepositoryInterface $messageCounter
      * @return void
      */
-    public function __construct(UserRepositoryInterface $user, SubscriberRepositoryInterface $subscriber)
-    {
+    public function __construct(
+        UserRepositoryInterface $user,
+        SubscriberRepositoryInterface $subscriber,
+        MessageCounterRepositoryInterface $messageCounter
+    ) {
         $this->user       = $user;
         $this->subscriber = $subscriber;
+        $this->messageCounter = $messageCounter;
     }
 
     /**
@@ -65,10 +76,13 @@ class UserController extends Controller
             }
         }
 
+        $nbCntUnread = $this->messageCounter->getNbUnreadMessages(Auth::id());
+
         return view('profile', [
             'user'         => $user,
             'posts'        => $user->posts,
             'isSubscribed' => $isSubscribed,
+            'nbCntUnread'  => $nbCntUnread
         ]);
     }
 
